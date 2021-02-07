@@ -4,7 +4,7 @@ using System.Text;
 using Business.Abstract;
 using DataAccess.Abstract;
 using Entities.Concrete;
-
+ 
 namespace Business.Concrete
 {
     public class CarManager : ICarService
@@ -21,9 +21,24 @@ namespace Business.Concrete
             return _CarDal.GetAll();
 
         }
-        public List<Car> GetById(int id)
+
+        public List<Car> GetCarsByBrandId(int BrandId)
         {
-            return _CarDal.GetById(id);
+            return _CarDal.GetAll(c => c.BrandId == BrandId);
         }
+
+        public List<Car> GetCarsByColorId(int ColorId)
+        {
+            return _CarDal.GetAll(c => c.ColorId == ColorId);
+        }
+
+        public void Add(Car car)
+        {
+            if (car.DailyPrice > 0 && car.ModelYear > 1950)
+            {
+                _CarDal.Add(car);
+            }
+        }
+        
     }
 }
