@@ -3,69 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Core.DataAccess.EntityFramework;
+using Core.Entities;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfCarDal : ICarDal
+    public class EfCarDal : EfEntityRepositoryBase<Car, MyRecapDatabaseContext>, ICarDal
     {
-        public void Add(Car entity)
+        public List<CarDetailDto> GetCarDetails()
         {
             using (MyRecapDatabaseContext myRecapDatabaseContext = new MyRecapDatabaseContext())
             {
-                var addedEntity = myRecapDatabaseContext.Entry(entity);
-                addedEntity.State = EntityState.Added;
-                myRecapDatabaseContext.SaveChanges();
-            }
-        }
+                var result = from ca in myRecapDatabaseContext.Cars
+                             join br in myRecapDatabaseContext.Brands
+                             on ca.BrandId equals br.BrandId
+                             join co in myRecapDatabaseContext.Colors
+                             on ca.ColorId equals co.ColorId
+                             select new CarDetailDto
+                             {
+                                 CarName = ca.CarName, BrandName = br.BrandName,
+                                 ColorName = co.ColorName, DailyPrice = ca.DailyPrice
+                             };
+                return result.ToList();
 
-        public void Delete(Car entity)
-        {
-            using (MyRecapDatabaseContext myRecapDatabaseContext = new MyRecapDatabaseContext())
-            {
-                var deletedEntity = myRecapDatabaseContext.Entry(entity);
-                deletedEntity.State = EntityState.Deleted;
-                myRecapDatabaseContext.SaveChanges();
-            }
-        }
-
-        public Car Get(Expression<Func<Car, bool>> filter)
-        {
-            using (MyRecapDatabaseContext myRecapDatabaseContext = new MyRecapDatabaseContext())
-            {
-                return myRecapDatabaseContext.Set<Car>().SingleOrDefault(filter);
-            }
-        }
-
-        public List<Car> GetAll(Expression<Func<Car, bool>> filter = null)
-        {
-            using (MyRecapDatabaseContext myRecapDatabaseContext = new MyRecapDatabaseContext())
-            {
-                return filter == null
-                    ? myRecapDatabaseContext.Set<Car>().ToList()
-                    : myRecapDatabaseContext.Set<Car>().Where(filter).ToList();
-            }
-        }
-
-        public List<Car> GetCarsByBrandId()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Car> GetCarsByColorId()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void update(Car entity)
-        {
-            using (MyRecapDatabaseContext myRecapDatabaseContext = new MyRecapDatabaseContext())
-            {
-                var updatedEntity = myRecapDatabaseContext.Entry(entity);
-                updatedEntity.State = EntityState.Modified;
-                myRecapDatabaseContext.SaveChanges();
             }
         }
     }

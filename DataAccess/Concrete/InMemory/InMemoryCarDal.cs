@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Core.Entities;
 using DataAccess.Abstract;
 using Entities.Concrete;
 
@@ -72,6 +73,11 @@ namespace DataAccess.Concrete
         }
 
         public List<Car> GetCarsByColorId()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<CarDetailDto> GetCarDetails()
         {
             throw new NotImplementedException();
         }

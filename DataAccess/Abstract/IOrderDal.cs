@@ -4,9 +4,10 @@ using System.Text;
 using Core.DataAccess;
 using Entities.Concrete;
 
-namespace DataAccess.Abstract
+namespace DataAccess
 {
-    public interface IColorDal : IEntityRepository<Color>
+    public interface IOrderDal : IEntityRepository<Order>
     {
+
     }
 }
